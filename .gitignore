@@ -1,0 +1,46 @@
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 编辑器和IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+
+# 依赖文件夹
+node_modules/
+bower_components/
+
+# 构建输出文件夹
+dist/
+build/
+out/
+
+# 环境配置文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 缓存文件
+*.cache
+.cache/
+.parcel-cache/
+
+# 其他
+*.zip
+*.tar.gz
+*.rar
