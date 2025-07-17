@@ -1,0 +1,726 @@
+/* ========================================
+   全局样式 - 这里设置整个网页的基础样式
+   ======================================== */
+
+/* 
+   * 选择器：选择页面上的所有元素
+   这就像给所有家具都贴上统一的标签一样
+*/
+* {
+    margin: 0;           /* 外边距设为0，去掉浏览器默认的空白间距 */
+    padding: 0;          /* 内边距设为0，去掉元素内部的默认空白 */
+    box-sizing: border-box;  /* 盒子模型：让宽高包含边框和内边距，更好控制尺寸 */
+}
+
+/* 
+   body 标签：整个网页的主体容器
+   就像房子的主体结构一样
+*/
+body {
+    /* 字体设置：优先使用系统字体，让文字在不同设备上都好看 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;    /* 行高：让文字行与行之间有合适的间距，更易阅读 */
+    color: #333;          /* 文字颜色：深灰色，比纯黑色更柔和 */
+    /* 背景渐变：从蓝紫色渐变到深紫色，135度角度 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;    /* 最小高度：100vh = 100%视窗高度，确保背景铺满整个屏幕 */
+}
+
+/* ========================================
+   导航栏样式 - 网页顶部的导航条
+   就像商店的招牌和菜单栏
+   ======================================== */
+
+/* 
+   .navbar 类：导航栏的主容器
+   class选择器用点(.)开头
+*/
+.navbar {
+    background: rgba(255, 255, 255, 0.95);  /* 半透明白色背景，0.95表示95%不透明度 */
+    backdrop-filter: blur(10px);             /* 背景模糊效果，让后面的内容模糊10像素 */
+    padding: 1rem 0;                         /* 上下内边距1rem，左右为0 */
+    /* 阴影效果：水平0，垂直2px，模糊20px，颜色为半透明黑色 */
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    position: sticky;                        /* 粘性定位：滚动时会"粘"在指定位置 */
+    top: 0;                                  /* 粘在页面顶部 */
+    z-index: 100;                           /* 层级：数字越大越在上层，确保导航栏在最上面 */
+}
+
+/* 
+   导航栏内容容器：控制导航栏内容的布局和宽度
+*/
+.nav-container {
+    max-width: 1200px;                      /* 最大宽度限制，防止在大屏幕上过宽 */
+    margin: 0 auto;                         /* 水平居中：上下边距0，左右自动 */
+    display: flex;                          /* 弹性布局：让子元素可以灵活排列 */
+    justify-content: space-between;         /* 主轴对齐：两端对齐，中间自动分配空间 */
+    align-items: center;                    /* 交叉轴对齐：垂直居中 */
+    padding: 0 2rem;                       /* 左右内边距2rem，上下为0 */
+}
+
+/* 
+   导航栏标题：网站的主标题
+*/
+.navbar h1 {
+    color: #667eea;                         /* 品牌色：蓝紫色 */
+    font-size: 1.8rem;                      /* 字体大小：1.8倍根字体大小 */
+}
+
+/* 
+   进度条容器：显示学习进度的区域
+*/
+.progress-bar {
+    display: flex;                          /* 弹性布局 */
+    align-items: center;                    /* 垂直居中对齐 */
+    gap: 1rem;                             /* 子元素之间的间距 */
+}
+
+/* 
+   进度条轨道：进度条的背景轨道
+*/
+.progress {
+    width: 200px;                          /* 固定宽度 */
+    height: 8px;                           /* 高度 */
+    background: #e0e0e0;                   /* 浅灰色背景 */
+    border-radius: 4px;                    /* 圆角：让进度条看起来更圆润 */
+    overflow: hidden;                      /* 隐藏超出部分 */
+}
+
+/* 
+   进度条填充：实际的进度显示
+   这里使用了后代选择器：.progress-bar 下的 .progress
+*/
+.progress-bar .progress {
+    background: #667eea;                   /* 品牌色填充 */
+    width: 0%;                             /* 初始宽度为0% */
+    transition: width 0.3s ease;          /* 过渡动画：宽度变化时0.3秒缓动效果 */
+}
+
+/* 
+   进度文字：显示具体的进度百分比
+   ID选择器用#开头，ID在页面中是唯一的
+*/
+#progressText {
+    font-size: 0.9rem;                     /* 稍小的字体 */
+    color: #666;                           /* 中等灰色 */
+}
+
+/* ========================================
+   主要内容区域 - 页面的核心内容容器
+   ======================================== */
+
+/* 
+   主内容容器：包裹所有主要内容的大容器
+   就像一个大的展示柜
+*/
+.main-content {
+    max-width: 1200px;                      /* 最大宽度限制，保持内容不会过宽 */
+    margin: 0 auto;                         /* 水平居中 */
+    padding: 2rem;                          /* 四周内边距，给内容留出呼吸空间 */
+}
+
+/* ========================================
+   欢迎区域 - 页面的欢迎和介绍部分
+   就像商店的欢迎台
+   ======================================== */
+
+/* 
+   欢迎区域容器：页面顶部的欢迎内容
+*/
+.welcome-section {
+    text-align: center;                     /* 文字居中对齐 */
+    background: white;                      /* 纯白色背景，与渐变背景形成对比 */
+    padding: 3rem;                          /* 较大的内边距，让内容有足够空间 */
+    border-radius: 20px;                    /* 大圆角，让卡片看起来更现代 */
+    /* 阴影效果：让卡片有"浮起来"的感觉 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;                    /* 下边距，与后面内容保持距离 */
+}
+
+/* 
+   欢迎区域主标题
+*/
+.welcome-section h2 {
+    color: #667eea;                         /* 品牌色 */
+    margin-bottom: 0.5rem;                  /* 下边距 */
+    font-size: 2.5rem;                      /* 大字体，突出重要性 */
+}
+
+/* 
+   副标题：对主标题的补充说明
+*/
+.subtitle {
+    color: #666;                            /* 较浅的颜色，层次分明 */
+    font-size: 1.2rem;                      /* 比正文稍大 */
+    margin-bottom: 2rem;                    /* 与下面内容保持距离 */
+}
+
+/* 
+   难度选择器容器：让用户选择学习难度的按钮组
+*/
+.difficulty-selector {
+    display: flex;                          /* 弹性布局 */
+    gap: 1rem;                             /* 按钮之间的间距 */
+    justify-content: center;                /* 水平居中 */
+    flex-wrap: wrap;                        /* 允许换行，适应小屏幕 */
+}
+
+/* 
+   难度选择按钮：每个难度级别的按钮
+*/
+.difficulty-btn {
+    padding: 0.8rem 1.5rem;                /* 内边距：上下0.8rem，左右1.5rem */
+    border: 2px solid #667eea;             /* 边框：2像素实线，品牌色 */
+    background: white;                      /* 默认白色背景 */
+    color: #667eea;                         /* 文字颜色与边框一致 */
+    border-radius: 25px;                    /* 大圆角，做成胶囊形状 */
+    cursor: pointer;                        /* 鼠标悬停时显示手型光标 */
+    transition: all 0.3s ease;             /* 所有属性变化都有0.3秒过渡动画 */
+    font-weight: bold;                      /* 粗体文字 */
+}
+
+/* 
+   按钮悬停和激活状态：鼠标悬停或被选中时的样式
+   :hover 伪类：鼠标悬停时触发
+   .active 类：被选中时添加的类
+*/
+.difficulty-btn:hover,
+.difficulty-btn.active {
+    background: #667eea;                    /* 背景变为品牌色 */
+    color: white;                           /* 文字变为白色 */
+    transform: translateY(-2px);            /* 向上移动2像素，产生"浮起"效果 */
+    /* 阴影效果：让按钮看起来真的浮起来了 */
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* ========================================
+   学习路径 - 课程内容的展示区域
+   就像一个学习地图，展示不同的学习阶段
+   ======================================== */
+
+/* 
+   学习路径容器：包含所有学习级别的大容器
+*/
+.learning-path {
+    margin: 2rem 0;                         /* 上下边距，与其他区域保持距离 */
+}
+
+/* 
+   级别容器：每个学习级别（初级、中级、高级）的容器
+   就像不同的学习教室
+*/
+.level-container {
+    background: white;                      /* 白色背景 */
+    padding: 2rem;                          /* 内边距，给内容留出空间 */
+    border-radius: 15px;                    /* 圆角，让容器看起来更友好 */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);  /* 轻微阴影，增加层次感 */
+    margin-bottom: 2rem;                    /* 下边距，级别之间保持距离 */
+}
+
+/* 
+   隐藏的级别容器：当某个难度级别不需要显示时
+   .hidden 类用于控制显示/隐藏
+*/
+.level-container.hidden {
+    display: none;                          /* 完全隐藏，不占用空间 */
+}
+
+/* 
+   级别标题：每个学习级别的标题（如"初级课程"）
+*/
+.level-container h3 {
+    color: #667eea;                         /* 品牌色 */
+    margin-bottom: 1.5rem;                  /* 下边距 */
+    font-size: 1.8rem;                      /* 较大字体 */
+    text-align: center;                     /* 居中对齐 */
+}
+
+/* 
+   课程网格：用网格布局展示课程卡片
+   就像商品展示架，自动排列课程
+*/
+.lessons-grid {
+    display: grid;                          /* 网格布局 */
+    /* 自适应列：每列最小300px，最大1fr（剩余空间平分） */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;                           /* 网格项之间的间距 */
+}
+
+/* 
+   课程卡片：每个单独课程的卡片
+   就像一本书的封面
+*/
+.lesson-card {
+    /* 渐变背景：从浅色到稍深的色调 */
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 1.5rem;                        /* 内边距 */
+    border-radius: 15px;                    /* 圆角 */
+    cursor: pointer;                        /* 鼠标悬停显示手型，表示可点击 */
+    transition: all 0.3s ease;             /* 所有变化都有过渡动画 */
+    border: 2px solid transparent;          /* 透明边框，为悬停效果预留空间 */
+}
+
+/* 
+   课程卡片悬停效果：鼠标悬停时的变化
+*/
+.lesson-card:hover {
+    transform: translateY(-5px);            /* 向上移动5像素，"浮起"效果 */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);  /* 更明显的阴影 */
+    border-color: #667eea;                  /* 边框变为品牌色 */
+}
+
+/* 
+   课程标题：每个课程的名称
+*/
+.lesson-card h4 {
+    color: #333;                            /* 深色文字 */
+    margin-bottom: 0.5rem;                  /* 下边距 */
+}
+
+/* 
+   课程描述：课程的简短介绍
+*/
+.lesson-card p {
+    color: #666;                            /* 中等灰色 */
+    margin-bottom: 1rem;                    /* 下边距 */
+}
+
+/* 
+   课程时长标签：显示课程预计学习时间
+   就像商品的价格标签
+*/
+.duration {
+    background: #667eea;                    /* 品牌色背景 */
+    color: white;                           /* 白色文字 */
+    padding: 0.3rem 0.8rem;                /* 小的内边距 */
+    border-radius: 15px;                    /* 圆角，做成胶囊形状 */
+    font-size: 0.8rem;                      /* 较小字体 */
+}
+
+/* ========================================
+   互动区域和工具区域 - 用户交互功能区
+   就像游戏厅和工具箱的结合
+   ======================================== */
+
+/* 
+   互动区域和工具区域的通用样式
+   使用逗号分隔的选择器，表示两个区域使用相同样式
+*/
+.interactive-section,
+.tools-section {
+    background: white;                      /* 白色背景 */
+    padding: 2rem;                          /* 内边距 */
+    border-radius: 15px;                    /* 圆角 */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);  /* 阴影效果 */
+    margin-bottom: 2rem;                    /* 下边距 */
+}
+
+/* 
+   区域标题的通用样式
+*/
+.interactive-section h3,
+.tools-section h3 {
+    color: #667eea;                         /* 品牌色 */
+    margin-bottom: 1.5rem;                  /* 下边距 */
+    text-align: center;                     /* 居中对齐 */
+}
+
+/* 
+   测验容器：包含测验问题和选项的容器
+   就像考试的答题卡
+*/
+.quiz-container {
+    background: #f8f9fa;                    /* 浅灰色背景，与白色区分 */
+    padding: 1.5rem;                        /* 内边距 */
+    border-radius: 10px;                    /* 圆角 */
+    text-align: center;                     /* 内容居中 */
+}
+
+/* 
+   测验问题：显示问题文本的样式
+*/
+.quiz-question {
+    font-size: 1.2rem;                      /* 稍大的字体，突出问题 */
+    margin-bottom: 1rem;                    /* 下边距 */
+    color: #333;                            /* 深色文字 */
+}
+
+/* 
+   测验选项容器：包含所有选项的容器
+*/
+.quiz-options {
+    display: flex;                          /* 弹性布局 */
+    flex-direction: column;                 /* 垂直排列选项 */
+    gap: 0.5rem;                           /* 选项之间的间距 */
+    margin-bottom: 1rem;                    /* 下边距 */
+}
+
+/* 
+   单个测验选项：每个可选择的答案
+*/
+.quiz-option {
+    padding: 0.8rem;                        /* 内边距，让选项更容易点击 */
+    background: white;                      /* 白色背景 */
+    border: 2px solid #e0e0e0;             /* 浅灰色边框 */
+    border-radius: 10px;                    /* 圆角 */
+    cursor: pointer;                        /* 鼠标悬停显示手型 */
+    transition: all 0.3s ease;             /* 过渡动画 */
+}
+
+/* 
+   选项悬停效果：鼠标悬停时的样式变化
+*/
+.quiz-option:hover {
+    border-color: #667eea;                  /* 边框变为品牌色 */
+    background: #f0f4ff;                    /* 浅蓝色背景 */
+}
+
+/* 
+   正确答案样式：当选项是正确答案时
+*/
+.quiz-option.correct {
+    background: #d4edda;                    /* 浅绿色背景 */
+    border-color: #28a745;                  /* 绿色边框 */
+}
+
+/* 
+   错误答案样式：当选项是错误答案时
+*/
+.quiz-option.incorrect {
+    background: #f8d7da;                    /* 浅红色背景 */
+    border-color: #dc3545;                  /* 红色边框 */
+}
+
+/* ========================================
+   工具区域 - 实用工具的展示区
+   ======================================== */
+
+/* 
+   工具网格：用网格布局展示各种工具
+*/
+.tools-grid {
+    display: grid;                          /* 网格布局 */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));  /* 自适应列 */
+    gap: 1.5rem;                           /* 网格项间距 */
+}
+
+/* 
+   工具卡片：每个工具的容器
+*/
+.tool-card {
+    background: #f8f9fa;                    /* 浅灰色背景 */
+    padding: 1.5rem;                        /* 内边距 */
+    border-radius: 10px;                    /* 圆角 */
+}
+
+/* 
+   工具卡片标题
+*/
+.tool-card h4 {
+    color: #667eea;                         /* 品牌色 */
+    margin-bottom: 1rem;                    /* 下边距 */
+}
+
+/* 
+   工具卡片中的文本域：用于用户输入
+*/
+.tool-card textarea {
+    width: 100%;                            /* 占满容器宽度 */
+    min-height: 100px;                      /* 最小高度 */
+    padding: 0.8rem;                        /* 内边距 */
+    border: 1px solid #ddd;                /* 浅灰色边框 */
+    border-radius: 8px;                     /* 圆角 */
+    resize: vertical;                       /* 只允许垂直调整大小 */
+    font-family: inherit;                   /* 继承父元素字体 */
+}
+
+/* 
+   FAQ列表中的详情元素：可展开/收起的问答项
+*/
+.faq-list details {
+    background: white;                      /* 白色背景 */
+    padding: 1rem;                          /* 内边距 */
+    margin-bottom: 0.5rem;                  /* 下边距 */
+    border-radius: 8px;                     /* 圆角 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* 轻微阴影 */
+}
+
+/* 
+   FAQ摘要：可点击的问题标题
+*/
+.faq-list summary {
+    cursor: pointer;                        /* 鼠标悬停显示手型 */
+    font-weight: bold;                      /* 粗体 */
+    color: #667eea;                         /* 品牌色 */
+}
+
+/* ========================================
+   模态框 - 弹出窗口样式
+   就像弹出的对话框或窗口
+   ======================================== */
+
+/* 
+   模态框背景：覆盖整个屏幕的半透明背景
+   就像给整个屏幕蒙上一层纱布
+*/
+.modal {
+    display: none;                          /* 默认隐藏 */
+    position: fixed;                        /* 固定定位，不随页面滚动 */
+    z-index: 1000;                         /* 很高的层级，确保在最上层 */
+    left: 0;                               /* 从左边缘开始 */
+    top: 0;                                /* 从顶部开始 */
+    width: 100%;                           /* 占满整个屏幕宽度 */
+    height: 100%;                          /* 占满整个屏幕高度 */
+    background-color: rgba(0, 0, 0, 0.5);  /* 半透明黑色背景 */
+}
+
+/* 
+   模态框内容：实际的弹窗内容容器
+*/
+.modal-content {
+    background-color: white;                /* 白色背景 */
+    margin: 5% auto;                        /* 上下边距5%，左右居中 */
+    padding: 2rem;                          /* 内边距 */
+    border-radius: 15px;                    /* 圆角 */
+    width: 90%;                            /* 宽度为屏幕的90% */
+    max-width: 800px;                      /* 最大宽度限制 */
+    max-height: 80vh;                      /* 最大高度为视窗高度的80% */
+    overflow-y: auto;                      /* 内容过多时显示垂直滚动条 */
+}
+
+/* 
+   关闭按钮：用于关闭模态框的X按钮
+*/
+.close {
+    color: #aaa;                           /* 浅灰色 */
+    float: right;                          /* 浮动到右边 */
+    font-size: 28px;                       /* 大字体 */
+    font-weight: bold;                      /* 粗体 */
+    cursor: pointer;                        /* 鼠标悬停显示手型 */
+}
+
+/* 
+   关闭按钮悬停效果
+*/
+.close:hover {
+    color: #667eea;                         /* 悬停时变为品牌色 */
+}
+
+/* ========================================
+   课程详情样式 - 课程内容的展示样式
+   ======================================== */
+
+/* 
+   课程详情容器：课程内容的主容器
+*/
+.lesson-detail {
+    line-height: 1.8;                       /* 较大的行高，提高可读性 */
+}
+
+/* 
+   课程详情中的小标题
+*/
+.lesson-detail h4 {
+    color: #667eea;                         /* 品牌色 */
+    margin: 1.5rem 0 1rem 0;               /* 上边距1.5rem，下边距1rem */
+}
+
+/* 
+   代码块：显示代码的预格式化文本
+   就像代码编辑器的样式
+*/
+.lesson-detail pre {
+    background: #2d3748;                    /* 深色背景，模拟代码编辑器 */
+    color: #e2e8f0;                        /* 浅色文字 */
+    padding: 1rem;                          /* 内边距 */
+    border-radius: 8px;                     /* 圆角 */
+    overflow-x: auto;                       /* 水平滚动，处理长代码行 */
+    margin: 1rem 0;                        /* 上下边距 */
+}
+
+/* 
+   行内代码：文本中的小段代码
+   就像在句子中突出显示的代码片段
+*/
+.lesson-detail code {
+    background: #e2e8f0;                   /* 浅灰色背景 */
+    padding: 0.2rem 0.4rem;               /* 小的内边距 */
+    border-radius: 4px;                     /* 小圆角 */
+    font-family: 'Courier New', monospace; /* 等宽字体，代码专用 */
+}
+
+/* 
+   代码块中的代码：重置行内代码的样式
+   因为代码块已经有了背景色，不需要额外样式
+*/
+.lesson-detail pre code {
+    background: none;                       /* 移除背景 */
+    padding: 0;                            /* 移除内边距 */
+}
+
+/* 
+   互动演示区域：可以实际操作的演示区
+   就像实验室的操作台
+*/
+.interactive-demo {
+    background: #f7fafc;                    /* 非常浅的背景色 */
+    border: 2px dashed #cbd5e0;           /* 虚线边框，表示这是特殊区域 */
+    border-radius: 10px;                    /* 圆角 */
+    padding: 1.5rem;                        /* 内边距 */
+    margin: 1rem 0;                        /* 上下边距 */
+    text-align: center;                     /* 内容居中 */
+}
+
+/* 
+   演示按钮：演示区域中的操作按钮
+*/
+.demo-button {
+    background: #667eea;                    /* 品牌色背景 */
+    color: white;                           /* 白色文字 */
+    padding: 0.8rem 1.5rem;               /* 内边距 */
+    border: none;                           /* 无边框 */
+    border-radius: 25px;                    /* 大圆角，胶囊形状 */
+    cursor: pointer;                        /* 鼠标悬停显示手型 */
+    font-size: 1rem;                       /* 标准字体大小 */
+    transition: all 0.3s ease;             /* 过渡动画 */
+}
+
+/* 
+   演示按钮悬停效果
+*/
+.demo-button:hover {
+    background: #5a67d8;                   /* 稍深的蓝色 */
+    transform: translateY(-2px);            /* 向上移动，"浮起"效果 */
+}
+
+/* ========================================
+   响应式设计 - 适配不同屏幕尺寸
+   就像衣服的不同尺码，让网页在各种设备上都好看
+   ======================================== */
+
+/* 
+   媒体查询：当屏幕宽度小于等于768px时应用这些样式
+   768px是平板电脑的典型宽度，这里主要针对手机和小平板
+*/
+@media (max-width: 768px) {
+    /* 
+       导航栏容器：在小屏幕上改为垂直布局
+    */
+    .nav-container {
+        flex-direction: column;             /* 改为垂直排列 */
+        gap: 1rem;                         /* 元素之间的间距 */
+    }
+    
+    /* 
+       难度选择器：在小屏幕上垂直排列按钮
+    */
+    .difficulty-selector {
+        flex-direction: column;             /* 垂直排列 */
+        align-items: center;                /* 居中对齐 */
+    }
+    
+    /* 
+       课程网格：在小屏幕上只显示一列
+    */
+    .lessons-grid {
+        grid-template-columns: 1fr;         /* 只有一列，占满宽度 */
+    }
+    
+    /* 
+       工具网格：在小屏幕上也只显示一列
+    */
+    .tools-grid {
+        grid-template-columns: 1fr;         /* 只有一列 */
+    }
+    
+    /* 
+       模态框内容：在小屏幕上调整边距和宽度
+    */
+    .modal-content {
+        margin: 10% 1rem;                   /* 上下边距10%，左右边距1rem */
+        width: auto;                        /* 宽度自动，由左右边距控制 */
+    }
+}
+
+/* ========================================
+   动画效果 - 让页面更生动有趣
+   就像给静态图片加上动态效果
+   ======================================== */
+
+/* 
+   淡入动画定义：从透明到不透明，从下方移入
+   @keyframes 定义动画的关键帧
+*/
+@keyframes fadeIn {
+    from {                                  /* 动画开始状态 */
+        opacity: 0;                         /* 完全透明 */
+        transform: translateY(20px);        /* 向下偏移20像素 */
+    }
+    to {                                    /* 动画结束状态 */
+        opacity: 1;                         /* 完全不透明 */
+        transform: translateY(0);           /* 回到原位置 */
+    }
+}
+
+/* 
+   级别容器动画：应用淡入动画
+*/
+.level-container {
+    animation: fadeIn 0.5s ease;           /* 使用fadeIn动画，持续0.5秒，缓动效果 */
+}
+
+/* 
+   课程卡片动画：也使用淡入动画，但有延迟效果
+*/
+.lesson-card {
+    animation: fadeIn 0.5s ease;           /* 淡入动画 */
+    animation-fill-mode: both;              /* 动画前后都保持关键帧状态 */
+}
+
+/* 
+   课程卡片的错开动画：让卡片依次出现，不是同时出现
+   :nth-child() 选择器用于选择第几个子元素
+*/
+.lesson-card:nth-child(1) { animation-delay: 0.1s; }  /* 第1个卡片延迟0.1秒 */
+.lesson-card:nth-child(2) { animation-delay: 0.2s; }  /* 第2个卡片延迟0.2秒 */
+.lesson-card:nth-child(3) { animation-delay: 0.3s; }  /* 第3个卡片延迟0.3秒 */
+
+/* ========================================
+   CSS注释说明总结
+   ======================================== */
+
+/*
+   🎯 学习要点总结：
+   
+   1. CSS选择器类型：
+      - * : 通用选择器，选择所有元素
+      - .class : 类选择器，选择有特定class的元素
+      - #id : ID选择器，选择特定ID的元素
+      - element : 元素选择器，选择特定HTML标签
+      - :hover : 伪类选择器，鼠标悬停状态
+      - :nth-child() : 结构伪类，选择第几个子元素
+   
+   2. 布局技术：
+      - Flexbox : 弹性布局，适合一维布局
+      - Grid : 网格布局，适合二维布局
+      - Position : 定位，控制元素位置
+   
+   3. 视觉效果：
+      - border-radius : 圆角
+      - box-shadow : 阴影
+      - background : 背景（包括渐变）
+      - transition : 过渡动画
+      - transform : 变换（移动、缩放等）
+   
+   4. 响应式设计：
+      - @media : 媒体查询，根据屏幕尺寸应用不同样式
+      - rem/em : 相对单位，更好的适配性
+      - vh/vw : 视窗单位，相对于屏幕尺寸
+   
+   5. 动画：
+      - @keyframes : 定义动画关键帧
+      - animation : 应用动画
+      - animation-delay : 动画延迟
+   
+   💡 记住：CSS就像给HTML穿衣服，让网页变得美观和实用！
+*/
