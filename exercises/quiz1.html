@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编程测验 - Claude代码学习平台</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* 测验页面专用样式 */
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .question-number {
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .answer-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .answer-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .answer-option.selected {
+            border-color: #667eea;
+            background: #e8f2ff;
+        }
+        
+        .answer-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .answer-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        
+        .quiz-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .quiz-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .explanation {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .quiz-complete {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quiz-complete h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .final-score {
+            font-size: 2rem;
+            color: #28a745;
+            margin: 1rem 0;
+        }
+        
+        .performance-message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>🎓 Claude代码学习平台</h1>
+            <div class="progress-bar">
+                <span>测验进度</span>
+                <div class="progress">
+                    <div class="progress-bar" id="quizProgress" style="width: 0%;"></div>
+                </div>
+                <span id="quizProgressText">0%</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 测验标题 -->
+        <div class="quiz-header">
+            <h2>🧠 编程知识测验</h2>
+            <p class="subtitle">测试你的编程基础知识，巩固学习成果</p>
+            <div class="quiz-progress">
+                <span>题目进度：</span>
+                <span id="questionCounter">1 / 10</span>
+                <span class="score-display">得分：<span id="currentScore">0</span></span>
+            </div>
+        </div>
+
+        <!-- 测验内容区域 -->
+        <div id="quizContainer">
+            <!-- 测验题目将在这里动态生成 -->
+        </div>
+
+        <!-- 测验完成页面 -->
+        <div id="quizComplete" class="quiz-complete" style="display: none;">
+            <h2>🎉 测验完成！</h2>
+            <div class="final-score" id="finalScore">0 / 10</div>
+            <div class="performance-message" id="performanceMessage"></div>
+            <button class="quiz-btn" onclick="restartQuiz()">重新开始测验</button>
+            <button class="quiz-btn" onclick="goHome()" style="margin-left: 1rem;">返回首页</button>
+        </div>
+    </div>
+
+    <script>
+        // 测验题目数据
+        const quizData = [
+            {
+                question: "HTML是什么的缩写？",
+                options: [
+                    "Hyper Text Markup Language",
+                    "High Tech Modern Language", 
+                    "Home Tool Markup Language",
+                    "Hyperlink and Text Markup Language"
+                ],
+                correct: 0,
+                explanation: "HTML是HyperText Markup Language（超文本标记语言）的缩写，是用来创建网页结构的标准标记语言。"
+            },
+            {
+                question: "CSS中哪个属性用来设置元素的背景颜色？",
+                options: [
+                    "color",
+                    "background-color",
+                    "bg-color", 
+                    "background"
+                ],
+                correct: 1,
+                explanation: "background-color属性专门用来设置元素的背景颜色。虽然background属性也可以设置背景色，但它是一个简写属性。"
+            },
+            {
+                question: "JavaScript中哪个关键字用来声明常量？",
+                options: [
+                    "var",
+                    "let",
+                    "const",
+                    "constant"
+                ],
+                correct: 2,
+                explanation: "const关键字用来声明常量，一旦赋值后就不能再改变。let用来声明变量，var是旧的变量声明方式。"
+            },
+            {
+                question: "在HTML中，哪个标签用来创建超链接？",
+                options: [
+                    "&lt;link&gt;",
+                    "&lt;a&gt;",
+                    "&lt;href&gt;",
+                    "&lt;url&gt;"
+                ],
+                correct: 1,
+                explanation: "&lt;a&gt;标签（anchor锚点）用来创建超链接，通过href属性指定链接的目标地址。"
+            },
+            {
+                question: "CSS中的'px'是什么单位？",
+                options: [
+                    "百分比单位",
+                    "相对单位",
+                    "绝对单位",
+                    "字体单位"
+                ],
+                correct: 2,
+                explanation: "px（像素）是绝对单位，表示屏幕上的物理像素点。相对单位包括em、rem、%等。"
+            },
+            {
+                question: "JavaScript中如何获取ID为'myElement'的元素？",
+                options: [
+                    "document.getElement('myElement')",
+                    "document.getElementById('myElement')",
+                    "document.querySelector('#myElement')",
+                    "B和C都正确"
+                ],
+                correct: 3,
+                explanation: "document.getElementById('myElement')和document.querySelector('#myElement')都可以获取ID为'myElement'的元素。"
+            },
+            {
+                question: "HTML5中哪个标签用来定义页面的主要内容区域？",
+                options: [
+                    "&lt;main&gt;",
+                    "&lt;content&gt;",
+                    "&lt;section&gt;",
+                    "&lt;article&gt;"
+                ],
+                correct: 0,
+                explanation: "&lt;main&gt;标签用来定义文档的主要内容区域，一个页面只能有一个main元素。"
+            },
+            {
+                question: "CSS Flexbox中，哪个属性用来设置主轴对齐方式？",
+                options: [
+                    "align-items",
+                    "justify-content",
+                    "flex-direction",
+                    "align-content"
+                ],
+                correct: 1,
+                explanation: "justify-content属性用来设置flex容器中项目在主轴上的对齐方式，align-items设置交叉轴对齐。"
+            },
+            {
+                question: "JavaScript中哪个方法用来向数组末尾添加元素？",
+                options: [
+                    "add()",
+                    "append()",
+                    "push()",
+                    "insert()"
+                ],
+                correct: 2,
+                explanation: "push()方法用来向数组末尾添加一个或多个元素，并返回新的数组长度。"
+            },
+            {
+                question: "响应式设计中，@media查询主要用来做什么？",
+                options: [
+                    "加载外部CSS文件",
+                    "根据设备特性应用不同样式",
+                    "创建动画效果",
+                    "定义CSS变量"
+                ],
+                correct: 1,
+                explanation: "@media查询用来根据设备的特性（如屏幕宽度、高度等）应用不同的CSS样式，是响应式设计的核心技术。"
+            }
+        ];
+
+        // 测验状态
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let quizCompleted = false;
+
+        // 初始化测验
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswer = null;
+            quizCompleted = false;
+            
+            document.getElementById('quizComplete').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            
+            updateProgress();
+            displayQuestion();
+        }
+
+        // 显示当前题目
+        function displayQuestion() {
+            const question = quizData[currentQuestionIndex];
+            const container = document.getElementById('quizContainer');
+            
+            container.innerHTML = `
+                <div class="quiz-card">
+                    <div class="question-number">第 ${currentQuestionIndex + 1} 题</div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="answer-options">
+                        ${question.options.map((option, index) => `
+                            <div class="answer-option" onclick="selectAnswer(${index})">
+                                ${String.fromCharCode(65 + index)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <strong>解释：</strong>${question.explanation}
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="quiz-btn" onclick="previousQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+                            上一题
+                        </button>
+                        <button class="quiz-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                            ${currentQuestionIndex === quizData.length - 1 ? '完成测验' : '下一题'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            selectedAnswer = null;
+        }
+
+        // 选择答案
+        function selectAnswer(answerIndex) {
+            if (selectedAnswer !== null) return; // 已经选择过答案
+            
+            selectedAnswer = answerIndex;
+            const question = quizData[currentQuestionIndex];
+            const options = document.querySelectorAll('.answer-option');
+            
+            // 显示正确答案和错误答案
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === answerIndex && index !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+                option.style.pointerEvents = 'none'; // 禁用点击
+            });
+            
+            // 更新分数
+            if (answerIndex === question.correct) {
+                score++;
+                updateScore();
+            }
+            
+            // 显示解释
+            document.getElementById('explanation').style.display = 'block';
+            
+            // 启用下一题按钮
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        // 下一题
+        function nextQuestion() {
+            if (selectedAnswer === null) return;
+            
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                updateProgress();
+                displayQuestion();
+            } else {
+                completeQuiz();
+            }
+        }
+
+        // 上一题
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateProgress();
+                displayQuestion();
+            }
+        }
+
+        // 完成测验
+        function completeQuiz() {
+            quizCompleted = true;
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('quizComplete').style.display = 'block';
+            
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('finalScore').textContent = `${score} / ${quizData.length} (${percentage}%)`;
+            
+            // 根据分数显示不同的评价
+            let message = '';
+            if (percentage >= 90) {
+                message = '🏆 优秀！你对编程基础知识掌握得非常好！';
+            } else if (percentage >= 70) {
+                message = '👍 良好！继续努力，你已经掌握了大部分知识！';
+            } else if (percentage >= 60) {
+                message = '📚 及格！建议回顾一下相关知识点。';
+            } else {
+                message = '💪 需要加油！建议重新学习基础课程。';
+            }
+            
+            document.getElementById('performanceMessage').textContent = message;
+        }
+
+        // 重新开始测验
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        // 返回首页
+        function goHome() {
+            window.location.href = '../index.html';
+        }
+
+        // 更新进度
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+            document.getElementById('quizProgress').style.width = `${progress}%`;
+            document.getElementById('quizProgressText').textContent = `${Math.round(progress)}%`;
+            document.getElementById('questionCounter').textContent = `${currentQuestionIndex + 1} / ${quizData.length}`;
+        }
+
+        // 更新分数显示
+        function updateScore() {
+            document.getElementById('currentScore').textContent = score;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initQuiz();
+        });
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', function(event) {
+            if (quizCompleted) return;
+            
+            // 数字键1-4选择答案
+            if (event.key >= '1' && event.key <= '4') {
+                const answerIndex = parseInt(event.key) - 1;
+                if (answerIndex < quizData[currentQuestionIndex].options.length) {
+                    selectAnswer(answerIndex);
+                }
+            }
+            
+            // 回车键下一题
+            if (event.key === 'Enter' && selectedAnswer !== null) {
+                nextQuestion();
+            }
+            
+            // 左右箭头键切换题目
+            if (event.key === 'ArrowLeft') {
+                previousQuestion();
+            }
+            if (event.key === 'ArrowRight' && selectedAnswer !== null) {
+                nextQuestion();
+            }
+        });
+
+        console.log('🧠 编程测验系统已加载完成！');
+    </script>
+</body>
+</html>
