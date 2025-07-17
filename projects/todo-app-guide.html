@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目实战：待办事项管理器 - Claude代码学习平台</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* 项目页面专用样式 */
+        .project-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .project-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .project-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .step-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: #333;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: attr(data-language);
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            background: #4a5568;
+            color: #e2e8f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .demo-area {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .todo-demo {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        .todo-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .todo-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .add-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .add-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .todo-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .todo-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .todo-item.completed {
+            background: #f0fff4;
+            text-decoration: line-through;
+            color: #68d391;
+        }
+        
+        .todo-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        .complete-btn {
+            color: #38a169;
+        }
+        
+        .complete-btn:hover {
+            background: #f0fff4;
+        }
+        
+        .delete-btn {
+            color: #e53e3e;
+        }
+        
+        .delete-btn:hover {
+            background: #fed7d7;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .feature-card {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature-card h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 1rem;
+        }
+        
+        .difficulty-easy { background: #38a169; }
+        .difficulty-medium { background: #d69e2e; }
+        .difficulty-hard { background: #e53e3e; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>🎓 Claude代码学习平台</h1>
+            <a href="../index.html" class="nav-btn">返回首页</a>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 项目标题 -->
+        <div class="project-header">
+            <h1>🚀 项目实战：待办事项管理器</h1>
+            <p>从零开始构建一个完整的待办事项应用，学习编程的实际应用</p>
+        </div>
+
+        <!-- 项目导航 -->
+        <div class="project-nav">
+            <a href="#overview" class="nav-btn active" onclick="showSection('overview')">项目概述</a>
+            <a href="#planning" class="nav-btn" onclick="showSection('planning')">需求分析</a>
+            <a href="#html" class="nav-btn" onclick="showSection('html')">HTML结构</a>
+            <a href="#css" class="nav-btn" onclick="showSection('css')">CSS样式</a>
+            <a href="#javascript" class="nav-btn" onclick="showSection('javascript')">JavaScript逻辑</a>
+            <a href="#testing" class="nav-btn" onclick="showSection('testing')">测试运行</a>
+            <a href="#extensions" class="nav-btn" onclick="showSection('extensions')">功能扩展</a>
+        </div>
+
+        <!-- 项目概述 -->
+        <div id="overview" class="project-section">
+            <h2>📋 项目概述</h2>
+            <p>在这个项目中，我们将创建一个功能完整的待办事项管理器。这个项目将帮助你理解前端开发的完整流程，从需求分析到最终实现。</p>
+            
+            <h3>🎯 学习目标</h3>
+            <ul>
+                <li>掌握HTML语义化标签的使用</li>
+                <li>学习CSS布局和样式设计</li>
+                <li>理解JavaScript DOM操作</li>
+                <li>学习事件处理和用户交互</li>
+                <li>了解本地存储的使用</li>
+                <li>体验完整的项目开发流程</li>
+            </ul>
+
+            <h3>🛠️ 技术栈</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>HTML5</h4>
+                    <p>使用语义化标签构建页面结构</p>
+                </div>
+                <div class="feature-card">
+                    <h4>CSS3</h4>
+                    <p>现代CSS布局和动画效果</p>
+                </div>
+                <div class="feature-card">
+                    <h4>JavaScript ES6+</h4>
+                    <p>现代JavaScript语法和DOM操作</p>
+                </div>
+                <div class="feature-card">
+                    <h4>LocalStorage</h4>
+                    <p>浏览器本地数据存储</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 需求分析 -->
+        <div id="planning" class="project-section" style="display: none;">
+            <h2>📝 需求分析</h2>
+            
+            <h3>🎯 核心功能</h3>
+            <div class="step-title">
+                <span class="step-number">1</span>
+                <span>添加待办事项</span>
+            </div>
+            <p>用户可以输入新的待办事项并添加到列表中。</p>
+
+            <div class="step-title">
+                <span class="step-number">2</span>
+                <span>查看待办列表</span>
+            </div>
+            <p>显示所有待办事项，包括已完成和未完成的。</p>
+
+            <div class="step-title">
+                <span class="step-number">3</span>
+                <span>标记完成</span>
+            </div>
+            <p>用户可以将待办事项标记为已完成。</p>
+
+            <div class="step-title">
+                <span class="step-number">4</span>
+                <span>删除事项</span>
+            </div>
+            <p>用户可以删除不需要的待办事项。</p>
+
+            <h3>🎨 界面设计要求</h3>
+            <ul>
+                <li>简洁美观的用户界面</li>
+                <li>响应式设计，适配不同设备</li>
+                <li>直观的操作反馈</li>
+                <li>良好的用户体验</li>
+            </ul>
+
+            <h3>💾 数据存储</h3>
+            <p>使用浏览器的LocalStorage来保存用户的待办事项，确保刷新页面后数据不丢失。</p>
+        </div>
+
+        <!-- HTML结构 -->
+        <div id="html" class="project-section" style="display: none;">
+            <h2>🏗️ HTML结构设计</h2>
+            
+            <p>首先，我们来设计HTML结构。HTML就像房子的框架，定义了页面的基本结构。</p>
+
+            <div class="step-title">
+                <span class="step-number">1</span>
+                <span>基础HTML模板</span>
+            </div>
+
+            <div class="code-block" data-language="HTML">
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;我的待办事项&lt;/title&gt;
+    &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;!-- 页面内容将在这里 --&gt;
+    &lt;/div&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">2</span>
+                <span>添加主要内容结构</span>
+            </div>
+
+            <div class="code-block" data-language="HTML">
+<pre><code>&lt;div class="container"&gt;
+    &lt;header&gt;
+        &lt;h1&gt;📝 我的待办事项&lt;/h1&gt;
+    &lt;/header&gt;
+    
+    &lt;main&gt;
+        &lt;section class="add-todo"&gt;
+            &lt;input type="text" id="todoInput" placeholder="输入新的待办事项..."&gt;
+            &lt;button id="addBtn"&gt;添加&lt;/button&gt;
+        &lt;/section&gt;
+        
+        &lt;section class="todo-list"&gt;
+            &lt;ul id="todoList"&gt;
+                &lt;!-- 待办事项将动态添加到这里 --&gt;
+            &lt;/ul&gt;
+        &lt;/section&gt;
+    &lt;/main&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <h3>🔍 代码解释</h3>
+            <ul>
+                <li><code>&lt;header&gt;</code>：页面头部，包含标题</li>
+                <li><code>&lt;main&gt;</code>：主要内容区域</li>
+                <li><code>&lt;section&gt;</code>：内容分区，语义化标签</li>
+                <li><code>id</code>属性：用于JavaScript选择元素</li>
+                <li><code>placeholder</code>：输入框的提示文字</li>
+            </ul>
+        </div>
+
+        <!-- CSS样式 -->
+        <div id="css" class="project-section" style="display: none;">
+            <h2>🎨 CSS样式设计</h2>
+            
+            <p>CSS就像房子的装修，让我们的待办应用变得美观实用。</p>
+
+            <div class="step-title">
+                <span class="step-number">1</span>
+                <span>基础样式重置</span>
+            </div>
+
+            <div class="code-block" data-language="CSS">
+<pre><code>/* 重置默认样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">2</span>
+                <span>容器和布局样式</span>
+            </div>
+
+            <div class="code-block" data-language="CSS">
+<pre><code>.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+header {
+    background: #667eea;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+main {
+    padding: 2rem;
+}</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">3</span>
+                <span>输入区域样式</span>
+            </div>
+
+            <div class="code-block" data-language="CSS">
+<pre><code>.add-todo {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+#todoInput {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+#todoInput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#addBtn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+#addBtn:hover {
+    background: #5a67d8;
+}</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">4</span>
+                <span>待办列表样式</span>
+            </div>
+
+            <div class="code-block" data-language="CSS">
+<pre><code>#todoList {
+    list-style: none;
+}
+
+.todo-item {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.todo-item.completed {
+    background: #f0fff4;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.todo-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.complete-btn {
+    color: #38a169;
+}
+
+.complete-btn:hover {
+    background: #f0fff4;
+}
+
+.delete-btn {
+    color: #e53e3e;
+}
+
+.delete-btn:hover {
+    background: #fed7d7;
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- JavaScript逻辑 -->
+        <div id="javascript" class="project-section" style="display: none;">
+            <h2>⚡ JavaScript交互逻辑</h2>
+            
+            <p>JavaScript是应用的大脑，负责处理用户交互和数据管理。</p>
+
+            <div class="step-title">
+                <span class="step-number">1</span>
+                <span>基础变量和DOM元素获取</span>
+            </div>
+
+            <div class="code-block" data-language="JavaScript">
+<pre><code>// 获取DOM元素
+const todoInput = document.getElementById('todoInput');
+const addBtn = document.getElementById('addBtn');
+const todoList = document.getElementById('todoList');
+
+// 待办事项数组
+let todos = [];
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    loadTodos();
+    renderTodos();
+});</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">2</span>
+                <span>添加待办事项功能</span>
+            </div>
+
+            <div class="code-block" data-language="JavaScript">
+<pre><code>// 添加待办事项
+function addTodo() {
+    const text = todoInput.value.trim();
+    
+    if (text === '') {
+        alert('请输入待办事项内容！');
+        return;
+    }
+    
+    const todo = {
+        id: Date.now(), // 使用时间戳作为唯一ID
+        text: text,
+        completed: false,
+        createdAt: new Date()
+    };
+    
+    todos.push(todo);
+    todoInput.value = ''; // 清空输入框
+    
+    saveTodos(); // 保存到本地存储
+    renderTodos(); // 重新渲染列表
+}
+
+// 绑定事件
+addBtn.addEventListener('click', addTodo);
+
+// 回车键添加
+todoInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        addTodo();
+    }
+});</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">3</span>
+                <span>渲染待办列表</span>
+            </div>
+
+            <div class="code-block" data-language="JavaScript">
+<pre><code>// 渲染待办列表
+function renderTodos() {
+    todoList.innerHTML = '';
+    
+    todos.forEach(todo => {
+        const li = document.createElement('li');
+        li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+        
+        li.innerHTML = `
+            &lt;span class="todo-text"&gt;${todo.text}&lt;/span&gt;
+            &lt;div class="todo-actions"&gt;
+                &lt;button class="action-btn complete-btn" onclick="toggleTodo(${todo.id})"&gt;
+                    ${todo.completed ? '↩️' : '✅'}
+                &lt;/button&gt;
+                &lt;button class="action-btn delete-btn" onclick="deleteTodo(${todo.id})"&gt;
+                    🗑️
+                &lt;/button&gt;
+            &lt;/div&gt;
+        `;
+        
+        todoList.appendChild(li);
+    });
+}</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">4</span>
+                <span>完成和删除功能</span>
+            </div>
+
+            <div class="code-block" data-language="JavaScript">
+<pre><code>// 切换完成状态
+function toggleTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        renderTodos();
+    }
+}
+
+// 删除待办事项
+function deleteTodo(id) {
+    if (confirm('确定要删除这个待办事项吗？')) {
+        todos = todos.filter(t => t.id !== id);
+        saveTodos();
+        renderTodos();
+    }
+}</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">5</span>
+                <span>本地存储功能</span>
+            </div>
+
+            <div class="code-block" data-language="JavaScript">
+<pre><code>// 保存到本地存储
+function saveTodos() {
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+// 从本地存储加载
+function loadTodos() {
+    const saved = localStorage.getItem('todos');
+    if (saved) {
+        todos = JSON.parse(saved);
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- 测试运行 -->
+        <div id="testing" class="project-section" style="display: none;">
+            <h2>🧪 测试运行</h2>
+            
+            <p>现在让我们测试我们的待办事项应用！</p>
+
+            <div class="step-title">
+                <span class="step-number">1</span>
+                <span>创建文件结构</span>
+            </div>
+            <p>创建以下文件：</p>
+            <ul>
+                <li><code>index.html</code> - 主页面文件</li>
+                <li><code>style.css</code> - 样式文件</li>
+                <li><code>script.js</code> - JavaScript文件</li>
+            </ul>
+
+            <div class="step-title">
+                <span class="step-number">2</span>
+                <span>在浏览器中打开</span>
+            </div>
+            <p>双击<code>index.html</code>文件，在浏览器中打开应用。</p>
+
+            <div class="step-title">
+                <span class="step-number">3</span>
+                <span>功能测试</span>
+            </div>
+            <ul>
+                <li>✅ 尝试添加新的待办事项</li>
+                <li>✅ 标记事项为已完成</li>
+                <li>✅ 删除不需要的事项</li>
+                <li>✅ 刷新页面检查数据是否保存</li>
+            </ul>
+
+            <div class="demo-area">
+                <h3>🎮 在线演示</h3>
+                <p>试试下面的待办事项管理器：</p>
+                <div class="todo-demo">
+                    <input type="text" class="todo-input" id="demoInput" placeholder="输入新的待办事项...">
+                    <button class="add-btn" onclick="addDemoTodo()">添加</button>
+                    <ul class="todo-list" id="demoList">
+                        <!-- 演示待办事项将在这里显示 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能扩展 -->
+        <div id="extensions" class="project-section" style="display: none;">
+            <h2>🚀 功能扩展建议</h2>
+            
+            <p>基础功能完成后，你可以尝试添加以下高级功能：</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>优先级设置 <span class="difficulty-badge difficulty-easy">简单</span></h4>
+                    <p>为待办事项添加高、中、低优先级，用不同颜色显示。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>分类管理 <span class="difficulty-badge difficulty-medium">中等</span></h4>
+                    <p>添加工作、生活、学习等分类，支持按分类筛选。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>截止日期 <span class="difficulty-badge difficulty-medium">中等</span></h4>
+                    <p>为待办事项设置截止日期，临近时提醒用户。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>搜索功能 <span class="difficulty-badge difficulty-easy">简单</span></h4>
+                    <p>添加搜索框，支持按关键词搜索待办事项。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>数据导出 <span class="difficulty-badge difficulty-hard">困难</span></h4>
+                    <p>支持将待办列表导出为JSON或CSV格式。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>主题切换 <span class="difficulty-badge difficulty-medium">中等</span></h4>
+                    <p>添加深色模式和浅色模式切换功能。</p>
+                </div>
+            </div>
+
+            <h3>💡 实现提示</h3>
+            
+            <div class="step-title">
+                <span class="step-number">1</span>
+                <span>优先级功能实现</span>
+            </div>
+            <div class="code-block" data-language="JavaScript">
+<pre><code>// 在todo对象中添加priority属性
+const todo = {
+    id: Date.now(),
+    text: text,
+    completed: false,
+    priority: 'medium', // 'high', 'medium', 'low'
+    createdAt: new Date()
+};
+
+// CSS中添加优先级样式
+.todo-item.priority-high { border-left: 4px solid #e53e3e; }
+.todo-item.priority-medium { border-left: 4px solid #d69e2e; }
+.todo-item.priority-low { border-left: 4px solid #38a169; }</code></pre>
+            </div>
+
+            <div class="step-title">
+                <span class="step-number">2</span>
+                <span>搜索功能实现</span>
+            </div>
+            <div class="code-block" data-language="JavaScript">
+<pre><code>// 添加搜索函数
+function searchTodos(keyword) {
+    const filtered = todos.filter(todo => 
+        todo.text.toLowerCase().includes(keyword.toLowerCase())
+    );
+    renderFilteredTodos(filtered);
+}
+
+// 绑定搜索输入事件
+searchInput.addEventListener('input', function(e) {
+    searchTodos(e.target.value);
+});</code></pre>
+            </div>
+
+            <h3>🎯 学习建议</h3>
+            <ul>
+                <li>先完成基础功能，确保代码稳定运行</li>
+                <li>每次只添加一个新功能，逐步测试</li>
+                <li>多参考在线文档和教程</li>
+                <li>不要害怕出错，调试是学习的重要部分</li>
+                <li>与其他开发者交流，分享你的作品</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 页面导航功能
+        function showSection(sectionId) {
+            // 隐藏所有section
+            document.querySelectorAll('.project-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // 显示选中的section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // 更新导航按钮状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // 演示待办事项功能
+        let demoTodos = [];
+
+        function addDemoTodo() {
+            const input = document.getElementById('demoInput');
+            const text = input.value.trim();
+            
+            if (text === '') {
+                alert('请输入待办事项内容！');
+                return;
+            }
+            
+            const todo = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+            
+            demoTodos.push(todo);
+            input.value = '';
+            renderDemoTodos();
+        }
+
+        function renderDemoTodos() {
+            const list = document.getElementById('demoList');
+            list.innerHTML = '';
+            
+            demoTodos.forEach(todo => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                
+                li.innerHTML = `
+                    <span>${todo.text}</span>
+                    <div class="todo-actions">
+                        <button class="action-btn complete-btn" onclick="toggleDemoTodo(${todo.id})">
+                            ${todo.completed ? '↩️' : '✅'}
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteDemoTodo(${todo.id})">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+                
+                list.appendChild(li);
+            });
+        }
+
+        function toggleDemoTodo(id) {
+            const todo = demoTodos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                renderDemoTodos();
+            }
+        }
+
+        function deleteDemoTodo(id) {
+            demoTodos = demoTodos.filter(t => t.id !== id);
+            renderDemoTodos();
+        }
+
+        // 回车键添加演示待办
+        document.getElementById('demoInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addDemoTodo();
+            }
+        });
+
+        console.log('🚀 项目实战指南已加载完成！');
+    </script>
+</body>
+</html>
