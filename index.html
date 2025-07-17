@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude代码学习平台 - 零基础友好的编程学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>🎓 Claude代码学习</h1>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+                <span id="progressText">0%</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <!-- 欢迎区域 -->
+        <section class="welcome-section">
+            <h2>🌟 欢迎来到编程世界</h2>
+            <p class="subtitle">零基础也能轻松学会编程！就像学习一门新语言一样简单有趣</p>
+            
+            <!-- 难度选择器 -->
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" data-level="beginner">🌱 初级</button>
+                <button class="difficulty-btn" data-level="intermediate">🌿 中级</button>
+                <button class="difficulty-btn" data-level="advanced">🌳 高级</button>
+            </div>
+        </section>
+
+        <!-- 学习路径 -->
+        <section class="learning-path">
+            <!-- 初级课程 -->
+            <div class="level-container" id="beginner-content">
+                <h3>🌱 初级课程 - 编程入门</h3>
+                <div class="lessons-grid">
+                    <div class="lesson-card" data-lesson="html-basics">
+                        <h4>🏗️ HTML基础</h4>
+                        <p>学习网页的骨架结构，就像搭积木一样简单！</p>
+                        <span class="duration">⏱️ 30分钟</span>
+                    </div>
+                    <div class="lesson-card" data-lesson="css-basics">
+                        <h4>🎨 CSS样式</h4>
+                        <p>给网页穿上漂亮的衣服，让它变得美观动人！</p>
+                        <span class="duration">⏱️ 45分钟</span>
+                    </div>
+                    <div class="lesson-card" data-lesson="js-basics">
+                        <h4>⚡ JavaScript入门</h4>
+                        <p>让网页动起来，添加交互功能，就像给玩具装上电池！</p>
+                        <span class="duration">⏱️ 60分钟</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 中级课程 -->
+            <div class="level-container hidden" id="intermediate-content">
+                <h3>🌿 中级课程 - 进阶技能</h3>
+                <div class="lessons-grid">
+                    <div class="lesson-card" data-lesson="responsive-design">
+                        <h4>📱 响应式设计</h4>
+                        <p>让网页在手机、平板、电脑上都好看，就像变形金刚！</p>
+                        <span class="duration">⏱️ 90分钟</span>
+                    </div>
+                    <div class="lesson-card" data-lesson="dom-manipulation">
+                        <h4>🎮 DOM操作</h4>
+                        <p>用JavaScript控制网页元素，就像遥控器控制电视！</p>
+                        <span class="duration">⏱️ 75分钟</span>
+                    </div>
+                    <div class="lesson-card" data-lesson="api-basics">
+                        <h4>🌐 API基础</h4>
+                        <p>让网页与外界交流，获取数据，就像打电话聊天！</p>
+                        <span class="duration">⏱️ 120分钟</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高级课程 -->
+            <div class="level-container hidden" id="advanced-content">
+                <h3>🌳 高级课程 - 专业开发</h3>
+                <div class="lessons-grid">
+                    <div class="lesson-card" data-lesson="frameworks">
+                        <h4>🏗️ 前端框架</h4>
+                        <p>使用React、Vue等框架，就像用高级工具箱建房子！</p>
+                        <span class="duration">⏱️ 180分钟</span>
+                    </div>
+                    <div class="lesson-card" data-lesson="build-tools">
+                        <h4>🔧 构建工具</h4>
+                        <p>自动化开发流程，就像有了智能助手帮你干活！</p>
+                        <span class="duration">⏱️ 150分钟</span>
+                    </div>
+                    <div class="lesson-card" data-lesson="performance">
+                        <h4>⚡ 性能优化</h4>
+                        <p>让网页跑得更快，就像给汽车调校引擎！</p>
+                        <span class="duration">⏱️ 200分钟</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 互动测验区域 -->
+        <section class="interactive-section">
+            <h3>🎯 快速测验</h3>
+            <div class="quiz-container">
+                <div class="quiz-question" id="quizQuestion">
+                    HTML中用来创建标题的标签是什么？
+                </div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-answer="correct">&lt;h1&gt;</div>
+                    <div class="quiz-option" data-answer="wrong">&lt;title&gt;</div>
+                    <div class="quiz-option" data-answer="wrong">&lt;header&gt;</div>
+                    <div class="quiz-option" data-answer="wrong">&lt;head&gt;</div>
+                </div>
+                <button id="nextQuiz" style="display:none;">下一题</button>
+            </div>
+        </section>
+
+        <!-- 实用工具区域 -->
+        <section class="tools-section">
+            <h3>🛠️ 实用工具</h3>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h4>🎨 代码格式化</h4>
+                    <textarea placeholder="粘贴你的代码，我来帮你整理格式..."></textarea>
+                    <button onclick="formatCode(this)">格式化代码</button>
+                </div>
+                <div class="tool-card">
+                    <h4>🌈 颜色选择器</h4>
+                    <input type="color" id="colorPicker" value="#667eea">
+                    <p>选择的颜色：<span id="colorValue">#667eea</span></p>
+                </div>
+                <div class="tool-card">
+                    <h4>❓ 常见问题</h4>
+                    <div class="faq-list">
+                        <details>
+                            <summary>什么是HTML？</summary>
+                            <p>HTML就像房子的框架，定义了网页的结构和内容。</p>
+                        </details>
+                        <details>
+                            <summary>CSS有什么用？</summary>
+                            <p>CSS就像装修师，负责让网页变得美观，控制颜色、布局、字体等。</p>
+                        </details>
+                        <details>
+                            <summary>JavaScript难学吗？</summary>
+                            <p>JavaScript就像网页的大脑，让网页能够思考和反应。虽然一开始可能觉得复杂，但就像学骑自行车，多练习就会了！</p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 模态框 -->
+    <div id="lessonModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="lessonContent">
+                <!-- 课程内容将在这里动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
